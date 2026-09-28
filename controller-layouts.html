@@ -87,6 +87,22 @@
     .en { color: var(--muted); font-size: 13px; letter-spacing: .04em; }
     .summary { margin: 8px 0 0; max-width: 68ch; }
 
+    .scheme {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin: 14px 18px 0;
+      padding: 10px 12px;
+      background: var(--accent-soft);
+      border-radius: 12px;
+    }
+    .scheme[hidden] { display: none; }
+    .scheme > span {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .08em;
+    }
     .toolbar {
       display: flex;
       flex-wrap: wrap;
@@ -218,8 +234,11 @@
           <p class="summary" id="summary"></p>
         </div>
       </div>
-      <div class="toolbar">
+      <div class="scheme" id="scheme">
+        <span>键位方案</span>
         <div class="modes" id="modes"></div>
+      </div>
+      <div class="toolbar">
         <div class="plat" id="plat"></div>
         <input class="search" id="search" type="search" placeholder="筛选功能，例如 闪避" aria-label="筛选功能">
       </div>
@@ -698,7 +717,9 @@
     }
 
     function renderModes() {
-      $("modes").replaceChildren(...game().modes.map((m) => {
+      const modes = game().modes;
+      $("scheme").hidden = modes.length < 2;
+      $("modes").replaceChildren(...modes.map((m) => {
         const b = document.createElement("button");
         b.type = "button";
         b.textContent = m.name;
