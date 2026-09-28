@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>手柄键位图 · 对马岛之魂 / 终末地 / 碧蓝幻想 Relink / 怪物猎人荒野</title>
+  <style>
+    :root {
+      --ink: #1c1914;
+      --muted: #5e584e;
+      --line: #d5ccbc;
+      --paper: #f4efe4;
+      --sheet: #fbf7f0;
+      --bg: #e4dccb;
+      --accent: #8c3a22;
+      --accent-soft: #f3e2d6;
+      --pad: #2a261f;
+      --pad-line: #8d8374;
+      --unused: #4a453c;
+      --chip: #fffdf8;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 500px at 10% -10%, rgba(255,255,255,.45), transparent 50%),
+        var(--bg);
+      font-family: "Avenir Next", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.5;
+    }
+
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 28px 20px 64px; }
+
+    header.top h1 {
+      margin: 0 0 6px;
+      font-family: Palatino, "Iowan Old Style", "Songti SC", "Noto Serif CJK SC", serif;
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 600;
+      letter-spacing: .04em;
+    }
+    header.top p { margin: 0; color: var(--muted); max-width: 68ch; }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 22px 0 14px;
+    }
+    .tabs button, .modes button, .plat button {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font: inherit;
+      cursor: pointer;
+    }
+    .tabs button[aria-selected="true"] {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fffaf3;
+    }
+    .sheet {
+      background: var(--sheet);
+      border: 1px solid #cfc4b0;
+      border-radius: 18px;
+      box-shadow: 0 16px 40px rgba(60, 40, 20, .08);
+      overflow: hidden;
+    }
+    .sheet-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      padding: 18px 18px 0;
+    }
+    .sheet-head h2 {
+      margin: 0;
+      font-family: Palatino, "Iowan Old Style", "Songti SC", serif;
+      font-size: 28px;
+      font-weight: 600;
+    }
+    .en { color: var(--muted); font-size: 13px; letter-spacing: .04em; }
+    .summary { margin: 8px 0 0; max-width: 68ch; }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      align-items: center;
+      padding: 14px 18px 0;
+    }
+    .modes, .plat { display: flex; flex-wrap: wrap; gap: 6px; }
+    .modes button[aria-pressed="true"], .plat button[aria-pressed="true"] {
+      background: var(--ink);
+      color: #f7f1e6;
+      border-color: var(--ink);
+    }
+    .search {
+      margin-left: auto;
+      border: 1px solid var(--line);
+      background: var(--paper);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font: inherit;
+      min-width: min(240px, 100%);
+      color: var(--ink);
+    }
+
+    .diagram {
+      display: grid;
+      grid-template-columns: minmax(180px, 1fr) minmax(260px, 340px) minmax(180px, 1fr);
+      gap: 8px 12px;
+      padding: 16px 18px 8px;
+      align-items: center;
+    }
+    .calls { display: flex; flex-direction: column; gap: 6px; }
+    .chip {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 8px;
+      align-items: start;
+      background: var(--chip);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 7px 10px;
+      cursor: pointer;
+      text-align: left;
+      font: inherit;
+      color: inherit;
+      width: 100%;
+    }
+    .chip small { display: block; color: var(--muted); font-size: 12px; }
+    .chip strong { font-weight: 650; font-size: 14px; }
+    .chip .glyph {
+      min-width: 2.4em;
+      text-align: center;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1.2;
+    }
+    .chip.idle { opacity: .38; }
+    .chip.hot, .chip:hover { border-color: var(--accent); background: var(--accent-soft); }
+
+    .pad-wrap { position: relative; }
+    svg.pad { width: 100%; height: auto; display: block; }
+    .pad-btn { fill: var(--unused); stroke: #1a1713; stroke-width: 1.5; }
+    .pad-btn.used { fill: var(--accent); }
+    .pad-btn.on { stroke: #fff6e8; stroke-width: 3; }
+    .glyph-text { font: 700 11px "Segoe UI", "PingFang SC", sans-serif; fill: #f6f0e6; text-anchor: middle; pointer-events: none; }
+    #pad-l3, #pad-r3 { fill: #14120f; }
+    #pad-l3.used, #pad-r3.used { fill: #fff6e8; }
+    #pad-l3.on, #pad-r3.on { stroke: #fff6e8; }
+    .body-shape { fill: var(--pad); stroke: var(--pad-line); stroke-width: 2; }
+    .hint { text-align: center; color: var(--muted); font-size: 12px; margin: 0 0 8px; }
+
+    .list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+      padding: 8px 18px 18px;
+    }
+    .group {
+      border-top: 2px solid var(--accent);
+      background: var(--paper);
+      border-radius: 0 0 12px 12px;
+      padding: 10px 12px 12px;
+    }
+    .group h3 { margin: 0 0 8px; font-size: 13px; letter-spacing: .12em; color: var(--muted); font-weight: 700; }
+    .row {
+      display: grid;
+      grid-template-columns: minmax(7.5rem, max-content) 1fr;
+      gap: 8px;
+      padding: 6px 0;
+      border-top: 1px solid var(--line);
+      font-size: 14px;
+    }
+    .row:first-of-type { border-top: 0; }
+    .row b { color: var(--accent); font-weight: 750; }
+
+    .notes, .sources { padding: 0 18px 18px; }
+    .notes h3, .sources h3 { margin: 0 0 8px; font-size: 15px; }
+    .notes ul, .sources ul { margin: 0; padding-left: 1.2em; }
+    .notes li + li, .sources li + li { margin-top: 6px; }
+    .sources a { color: var(--accent); }
+    footer.colophon {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 860px) {
+      .diagram { grid-template-columns: 1fr; }
+      .pad-wrap { order: -1; max-width: 420px; margin: 0 auto; }
+      .search { margin-left: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <h1>手柄键位图</h1>
+      <p>四款游戏的默认手柄对照。示意图按键位置固定，PlayStation 与 Xbox 只切换印在键上的名字。有争议或会随情境变化的功能，写在每款游戏的说明里。</p>
+    </header>
+    <div class="tabs" id="tabs" role="tablist"></div>
+    <article class="sheet" id="sheet">
+      <div class="sheet-head">
+        <div>
+          <div class="en" id="en"></div>
+          <h2 id="title"></h2>
+          <p class="summary" id="summary"></p>
+        </div>
+      </div>
+      <div class="toolbar">
+        <div class="modes" id="modes"></div>
+        <div class="plat" id="plat"></div>
+        <input class="search" id="search" type="search" placeholder="筛选功能，例如 闪避" aria-label="筛选功能">
+      </div>
+      <div class="diagram">
+        <div class="calls" id="calls-left"></div>
+        <div class="pad-wrap">
+          <svg class="pad" viewBox="0 0 360 250" role="img" aria-label="手柄示意图">
+            <rect class="body-shape" x="78" y="58" width="204" height="150" rx="46"/>
+            <path class="body-shape" d="M78 150 C40 150 28 188 48 214 C68 240 110 228 124 200 L124 150 Z"/>
+            <path class="body-shape" d="M282 150 C320 150 332 188 312 214 C292 240 250 228 236 200 L236 150 Z"/>
+            <g id="pad-l2" class="pad-btn"><rect x="96" y="18" width="62" height="16" rx="6"/></g>
+            <g id="pad-l1" class="pad-btn"><rect x="96" y="38" width="62" height="14" rx="5"/></g>
+            <g id="pad-r2" class="pad-btn"><rect x="202" y="18" width="62" height="16" rx="6"/></g>
+            <g id="pad-r1" class="pad-btn"><rect x="202" y="38" width="62" height="14" rx="5"/></g>
+            <text class="glyph-text" id="glyph-l2" x="127" y="30"></text>
+            <text class="glyph-text" id="glyph-l1" x="127" y="49"></text>
+            <text class="glyph-text" id="glyph-r2" x="233" y="30"></text>
+            <text class="glyph-text" id="glyph-r1" x="233" y="49"></text>
+
+            <g id="pad-ls" class="pad-btn"><circle cx="132" cy="108" r="22"/></g>
+            <text class="glyph-text" id="glyph-ls" x="132" y="112"></text>
+            <g id="pad-l3" class="pad-btn"><circle cx="132" cy="108" r="6"/></g>
+
+            <g id="pad-dup" class="pad-btn"><rect x="122" y="158" width="16" height="16" rx="2"/></g>
+            <g id="pad-ddown" class="pad-btn"><rect x="122" y="190" width="16" height="16" rx="2"/></g>
+            <g id="pad-dleft" class="pad-btn"><rect x="106" y="174" width="16" height="16" rx="2"/></g>
+            <g id="pad-dright" class="pad-btn"><rect x="138" y="174" width="16" height="16" rx="2"/></g>
+
+            <g id="pad-triangle" class="pad-btn"><circle cx="230" cy="92" r="13"/></g>
+            <g id="pad-square" class="pad-btn"><circle cx="208" cy="114" r="13"/></g>
+            <g id="pad-circle" class="pad-btn"><circle cx="252" cy="114" r="13"/></g>
+            <g id="pad-cross" class="pad-btn"><circle cx="230" cy="136" r="13"/></g>
+            <text class="glyph-text" id="glyph-triangle" x="230" y="96"></text>
+            <text class="glyph-text" id="glyph-square" x="208" y="118"></text>
+            <text class="glyph-text" id="glyph-circle" x="252" y="118"></text>
+            <text class="glyph-text" id="glyph-cross" x="230" y="140"></text>
+
+            <g id="pad-rs" class="pad-btn"><circle cx="230" cy="176" r="18"/></g>
+            <text class="glyph-text" id="glyph-rs" x="230" y="180"></text>
+            <g id="pad-r3" class="pad-btn"><circle cx="230" cy="176" r="5"/></g>
+
+            <g id="pad-touch" class="pad-btn"><rect x="154" y="96" width="40" height="22" rx="6"/></g>
+            <g id="pad-options" class="pad-btn"><circle cx="188" cy="132" r="7"/></g>
+          </svg>
+          <p class="hint" id="pad-hint"></p>
+        </div>
+        <div class="calls" id="calls-right"></div>
+      </div>
+      <div class="list" id="list"></div>
+      <section class="notes">
+        <h3>读图时注意</h3>
+        <ul id="notes"></ul>
+      </section>
+      <section class="sources">
+        <h3>依据</h3>
+        <ul id="sources"></ul>
+      </section>
+    </article>
+    <footer class="colophon">示意图不是官方键位图，也不是各厂商的手柄外观。整理日期 2026-09-28。游戏更新后若和界面提示不一致，以游戏内为准。</footer>
+  </div>
+  <script>
+    const KEYS = {
+      l2: { ps: "L2", xb: "LT" },
+      l1: { ps: "L1", xb: "LB" },
+      r2: { ps: "R2", xb: "RT" },
+      r1: { ps: "R1", xb: "RB" },
+      ls: { ps: "左摇杆", xb: "左摇杆" },
+      l3: { ps: "L3 按下", xb: "按下 LS" },
+      rs: { ps: "右摇杆", xb: "右摇杆" },
+      r3: { ps: "R3 按下", xb: "按下 RS" },
+      dup: { ps: "↑", xb: "↑" },
+      ddown: { ps: "↓", xb: "↓" },
+      dleft: { ps: "←", xb: "←" },
+      dright: { ps: "→", xb: "→" },
+      triangle: { ps: "△", xb: "Y" },
+      square: { ps: "□", xb: "X" },
+      circle: { ps: "○", xb: "B" },
+      cross: { ps: "×", xb: "A" },
+      touch: { ps: "触摸板", xb: "View" },
+      options: { ps: "Options", xb: "Menu" }
+    };
+
+    const GLYPH = {
+      l2: { ps: "L2", xb: "LT" },
+      l1: { ps: "L1", xb: "LB" },
+      r2: { ps: "R2", xb: "RT" },
+      r1: { ps: "R1", xb: "RB" },
+      ls: { ps: "L", xb: "L" },
+      l3: { ps: "", xb: "" },
+      rs: { ps: "R", xb: "R" },
+      r3: { ps: "", xb: "" },
+      dup: { ps: "", xb: "" },
+      ddown: { ps: "", xb: "" },
+      dleft: { ps: "", xb: "" },
+      dright: { ps: "", xb: "" },
+      triangle: { ps: "△", xb: "Y" },
+      square: { ps: "□", xb: "X" },
+      circle: { ps: "○", xb: "B" },
+      cross: { ps: "×", xb: "A" },
+      touch: { ps: "", xb: "" },
+      options: { ps: "", xb: "" }
+    };
+
+    const GROUP = {
+      stick: "摇杆",
+      shoulder: "肩键与扳机",
+      face: "面键",
+      dpad: "十字键",
+      system: "中央键",
+      chord: "组合键"
+    };
+
+    const KEY_GROUP = {
+      ls: "stick", l3: "stick", rs: "stick", r3: "stick",
+      l1: "shoulder", l2: "shoulder", r1: "shoulder", r2: "shoulder",
+      triangle: "face", square: "face", circle: "face", cross: "face",
+      dup: "dpad", ddown: "dpad", dleft: "dpad", dright: "dpad",
+      touch: "system", options: "system"
+    };
+
+    const LEFT = ["l1", "l2", "ls", "l3", "dup", "ddown", "dleft", "dright"];
+    const RIGHT = ["r1", "r2", "triangle", "square", "circle", "cross", "rs", "r3", "touch", "options"];
+
+    const GAMES = [
+      {
+        id: "tsushima",
+        name: "对马岛之魂",
+        en: "Ghost of Tsushima",
+        accent: "#8c3a22",
+        soft: "#f3e2d6",
+        summary: "PS4 / PS5 默认方案，导演剪辑版沿用同一套基础战斗键位。游戏里还能换成左手方案，或把攻击挪到肩键的近战交替方案。",
+        modes: [
+          {
+            id: "field",
+            name: "探索 / 战斗",
+            actions: [
+              { keys: ["ls"], name: "移动" },
+              { keys: ["rs"], name: "转动镜头" },
+              { keys: ["l3"], name: "奔跑；骑马时疾驰" },
+              { keys: ["r3"], name: "蹲伏" },
+              { keys: ["cross"], name: "跳跃" },
+              { keys: ["circle"], name: "冲刺；解锁翻滚后再按一次" },
+              { keys: ["square"], name: "轻攻击 / 暗杀" },
+              { keys: ["triangle"], name: "重攻击" },
+              { keys: ["l1"], name: "按住格挡；攻击落到身上前点按则弹反" },
+              { keys: ["l2"], name: "按住瞄准，并选择远程武器或弹药" },
+              { keys: ["r1"], name: "鬼武器速射" },
+              { keys: ["r2"], name: "射击、交互或钩锁；按住后选择架势或速射武器" },
+              { keys: ["dup"], name: "对峙。若打开锁定，点按变为锁定，长按才是对峙" },
+              { keys: ["dleft"], name: "召唤马" },
+              { keys: ["dright"], name: "拍照模式" },
+              { keys: ["ddown"], name: "消耗决心治疗" },
+              { keys: ["touch"], name: "滑动：导风与手势；按下：集中听觉" },
+              { keys: ["options"], name: "打开菜单" }
+            ]
+          }
+        ],
+        notes: [
+          "面键以 GameWith、Fextralife 和玩家整理的默认表为准，三处一致：× 跳、○ 冲刺、□ 轻攻击/暗杀、△ 重攻击。",
+          "R2 的交互和钩锁、○ 的二段翻滚，来自 GameAccess 对实机默认键位的解说，和“R2 射击 / 按住切换架势”是同一颗键的不同情境。",
+          "原版不能逐键重绑，只能换整套预设。"
+        ],
+        sources: [
+          ["GameWith 默认键位表", "https://gamewith.net/ghost-of-tsushima/article/show/20168"],
+          ["Fextralife Controls", "https://ghostoftsushima.wiki.fextralife.com/Controls"],
+          ["GameAccess 实机操作解说", "https://gameaccess.info/ghost-of-tsushima-motor-accessibility-video/"]
+        ]
+      },
+      {
+        id: "endfield",
+        name: "明日方舟：终末地",
+        en: "Arknights: Endfield",
+        accent: "#0f6a66",
+        soft: "#d9efed",
+        summary: "PC 与移动端可接 PlayStation、Xbox 手柄。下表是英文攻略记录的默认战斗/探索布局。官方公告只说明了支持的手柄和连接方式，没有公布完整键位表。",
+        modes: [
+          {
+            id: "explore",
+            name: "探索 / 战斗",
+            actions: [
+              { keys: ["ls"], name: "移动" },
+              { keys: ["l3"], name: "追踪当前任务" },
+              { keys: ["rs"], name: "镜头" },
+              { keys: ["r3"], name: "扫描，或取消锁定" },
+              { keys: ["dleft"], name: "切换干员" },
+              { keys: ["dright"], name: "切换探索 / 基建模式" },
+              { keys: ["dup", "ddown"], name: "切换交互对象" },
+              { keys: ["l1"], name: "干员 / 战技轮盘" },
+              { keys: ["l2"], name: "功能轮盘" },
+              { keys: ["cross"], name: "跳跃" },
+              { keys: ["circle"], name: "闪避。默认是切换，不是按住" },
+              { keys: ["square"], name: "普通攻击" },
+              { keys: ["triangle"], name: "交互；长按全部拾取" },
+              { keys: ["r1"], name: "连携技" },
+              { keys: ["r2"], name: "使用当前便携工具" },
+              { keys: ["touch"], name: "地图。上下滑动缩放，双击重置视角" },
+              { keys: ["options"], name: "打开菜单" }
+            ]
+          }
+        ],
+        notes: [
+          "Destructoid（2026-01-22）把四名干员战技写成 L1+□、L2+△、L1+○、L1+×。干员 2 单独用 L2，和另外三人的 L1 组合不一致，没有第二份独立原文能复核，所以没有画进主图。指定干员是 L1 加十字键四个方向。进游戏后看 HUD。",
+          "游戏内能改的很少：跳跃和闪避可以对调，战技和连携可以对调，另有两个终极技/自动普攻开关。",
+          "基建俯瞰、滑索等场景会临时改确认键。机核的手柄交互分析提到过这一点，那些界面以当场提示为准。",
+          "官方支持 DualSense、DualSense Edge、DUALSHOCK 4，以及 Xbox 无线手柄和 Elite。PC 上的 DualSense 建议有线，蓝牙时震动和扬声器不可用。"
+        ],
+        sources: [
+          ["Destructoid 键位表", "https://www.destructoid.com/all-arknights-endfield-pc-and-controller-keybinds/"],
+          ["Game8 Controls", "https://game8.co/games/Arknights-Endfield/archives/538343"],
+          ["鹰角官方：手柄支持说明", "https://endfield.hypergryph.com/news/8563"],
+          ["机核：手柄交互观察", "https://www.gcores.com/articles/211635"]
+        ]
+      },
+      {
+        id: "relink",
+        name: "碧蓝幻想：Relink",
+        en: "Granblue Fantasy: Relink",
+        accent: "#1d4e89",
+        soft: "#d9e6f5",
+        summary: "页游和手游《碧蓝幻想》以点击操作为主，没有一套统一的主机键位。这里画的是动作游戏 Relink 的默认 Type A。",
+        modes: [
+          {
+            id: "battle",
+            name: "战斗",
+            actions: [
+              { keys: ["ls"], name: "移动" },
+              { keys: ["rs"], name: "镜头。锁定后拨动摇杆切换目标" },
+              { keys: ["l3"], name: "冲刺" },
+              { keys: ["l3", "r3"], name: "奥义槽满时，同时按下发动奥义", chord: true },
+              { keys: ["square"], name: "攻击" },
+              { keys: ["triangle"], name: "特殊攻击" },
+              { keys: ["circle"], name: "连锁攻击。敌人昏厥、出现连锁时机时使用" },
+              { keys: ["cross"], name: "跳跃" },
+              { keys: ["l1"], name: "锁定开 / 关" },
+              { keys: ["l2"], name: "按住格挡" },
+              { keys: ["r1"], name: "按住，再按 □ △ ○ × 发动对应能力" },
+              { keys: ["r2"], name: "躲避" },
+              { keys: ["dup", "ddown", "dleft", "dright"], name: "长按使用回复药：治疗、强效、群疗、复活。哪一个方向对应哪瓶药，以游戏内物品栏为准" },
+              { keys: ["touch"], name: "交流。长按打开交流轮盘" },
+              { keys: ["options"], name: "主菜单 / 暂停" }
+            ]
+          },
+          {
+            id: "town",
+            name: "城镇",
+            actions: [
+              { keys: ["ls"], name: "移动" },
+              { keys: ["l3"], name: "冲刺" },
+              { keys: ["rs"], name: "镜头" },
+              { keys: ["triangle"], name: "对话" },
+              { keys: ["circle"], name: "调查" },
+              { keys: ["cross"], name: "跳跃" },
+              { keys: ["touch"], name: "交流。长按打开交流轮盘" },
+              { keys: ["options"], name: "主菜单" }
+            ]
+          }
+        ],
+        notes: [
+          "Fextralife 的战斗页写明：按 L1 锁定，按住 L2 格挡，□ 普通攻击，△ 特殊攻击，奥义是同时按 L3 和 R3。连锁攻击对应 ○，与中文攻略一致。",
+          "部分中文攻略把格挡和锁定写成 L1 / L2 对调。游戏里有两种格挡/锁定预设，手感相反时到系统设置里切换，不要先改手柄映射。",
+          "Type B、Type C 在主菜单 → 系统 → 游戏选项 → 游戏性 → 控制方案。键盘可以改键，手柄只能选这三套。",
+          "城镇里长按右摇杆打开地图出现在 Game8 的表中，但按钮图没有随文字保留，主图未画这一项。"
+        ],
+        sources: [
+          ["Fextralife Controls", "https://granbluefantasyrelink.wiki.fextralife.com/Controls"],
+          ["Fextralife Combat", "https://granbluefantasyrelink.wiki.fextralife.com/Combat"],
+          ["Game8 Type A 对照", "https://game8.co/games/Granblue-Fantasy-Relink/archives/611025"]
+        ]
+      },
+      {
+        id: "wilds",
+        name: "怪物猎人：荒野",
+        en: "Monster Hunter Wilds",
+        accent: "#3d5c2e",
+        soft: "#e3edd9",
+        summary: "《怪物猎人》各代肩键并不相同。本页是荒野的默认键位，坐骑名为鹭鹰龙。世界、崛起不能照这张图。",
+        modes: [
+          {
+            id: "sheathed",
+            name: "收刀",
+            actions: [
+              { keys: ["ls"], name: "移动" },
+              { keys: ["l3"], name: "切换冲刺" },
+              { keys: ["rs"], name: "镜头" },
+              { keys: ["r3"], name: "切换锁定目标" },
+              { keys: ["cross"], name: "下蹲；移动中翻滚。也用于对话、使用设施，菜单中是确认" },
+              { keys: ["circle"], name: "采集。菜单中是取消。瞄准投射器时改为钩索采集" },
+              { keys: ["triangle"], name: "拔刀" },
+              { keys: ["square"], name: "使用选中的道具" },
+              { keys: ["dup"], name: "召唤鹭鹰龙，自动移动" },
+              { keys: ["ddown"], name: "召唤鹭鹰龙，手动移动" },
+              { keys: ["dleft"], name: "查看鹭鹰龙补给" },
+              { keys: ["dright"], name: "切换武器" },
+              { keys: ["l1"], name: "按住打开道具栏。配合 □/○ 选道具，配合 △/× 选弹药或瓶" },
+              { keys: ["l2"], name: "按住瞄准投射器" },
+              { keys: ["r1"], name: "按住冲刺" },
+              { keys: ["r2"], name: "瞄准时发射投射器" },
+              { keys: ["touch"], name: "地图" },
+              { keys: ["options"], name: "菜单" }
+            ]
+          },
+          {
+            id: "drawn",
+            name: "拔刀",
+            actions: [
+              { keys: ["ls"], name: "移动" },
+              { keys: ["l3"], name: "收刀；集中模式中可发射已装填的投射器" },
+              { keys: ["rs"], name: "镜头" },
+              { keys: ["r3"], name: "切换锁定目标" },
+              { keys: ["cross"], name: "翻滚" },
+              { keys: ["circle"], name: "近战攻击；远程武器则是特殊射击或切换模式" },
+              { keys: ["triangle"], name: "近战攻击；远程武器则是装填或涂装" },
+              { keys: ["square"], name: "收刀" },
+              { keys: ["dup"], name: "召唤鹭鹰龙，自动移动" },
+              { keys: ["ddown"], name: "召唤鹭鹰龙，手动移动" },
+              { keys: ["dleft"], name: "鹭鹰龙补给" },
+              { keys: ["dright"], name: "切换武器" },
+              { keys: ["l1"], name: "按住打开道具栏" },
+              { keys: ["l2"], name: "按住：近战进入集中模式，远程为瞄准" },
+              { keys: ["r1"], name: "处于集中模式时：集中打击" },
+              { keys: ["r2"], name: "近战的特殊攻击或格挡；远程的普通射击或蓄力射击" },
+              { keys: ["touch"], name: "地图" },
+              { keys: ["options"], name: "菜单" }
+            ]
+          },
+          {
+            id: "seikret",
+            name: "骑鹭鹰龙",
+            actions: [
+              { keys: ["ls"], name: "移动" },
+              { keys: ["l3"], name: "自动移动时切到全速" },
+              { keys: ["rs"], name: "镜头" },
+              { keys: ["r3"], name: "切换目标" },
+              { keys: ["cross"], name: "下骑。左摇杆加 × 可以向侧面跳下" },
+              { keys: ["circle"], name: "采集" },
+              { keys: ["triangle"], name: "骑乘攻击 / 拔刀" },
+              { keys: ["square"], name: "使用道具；拔刀之后收刀" },
+              { keys: ["dup"], name: "改为自动移动" },
+              { keys: ["ddown"], name: "改为手动移动" },
+              { keys: ["dleft"], name: "打开鹭鹰龙补给袋" },
+              { keys: ["dright"], name: "切换武器" },
+              { keys: ["l1"], name: "道具栏" },
+              { keys: ["l2"], name: "按住瞄准投射器；拔刀后用于瞄准" },
+              { keys: ["r1"], name: "加速，长按全速" },
+              { keys: ["r2"], name: "减速，长按急停。拔刀并瞄准之后，这一键改为射击" },
+              { keys: ["touch"], name: "地图" },
+              { keys: ["options"], name: "菜单" }
+            ]
+          }
+        ],
+        notes: [
+          "收刀面键采用 Prima Games 与 Fextralife 一致的记录：× 确认/对话/下蹲，○ 采集/取消，△ 拔刀，□ 用道具。官方手册摘录同样写明收刀时 □ 使用道具，长按 L2 瞄准，L2+R2 发射，L2+○ 钩索采集。",
+          "拔刀后 △ 和 ○ 都是攻击键，轻击重击随武器变化，没有写成固定的“轻/重”。有盾的武器用 R2 格挡。",
+          "披风的快捷是 L1+R2，出自 PlayStation 官方新手指南。",
+          "骑乘的 R1 加速、R2 刹车来自测试版官方手册的中文摘录。L3 在自动移动中切全速，来自英文维基，和 R1 加速同时存在。",
+          "手柄不能任意改键。开始菜单 → 选项 → 操控里可以对调确认键等有限项目。"
+        ],
+        sources: [
+          ["Fextralife Controls", "https://monsterhunterwilds.wiki.fextralife.com/Controls"],
+          ["Prima Games 默认键位", "https://primagames.com/tips/monster-hunter-wilds-complete-controls-pc-controller"],
+          ["测试版官方手册摘录（道具与投射器）", "https://www.gamersky.com/handbook/202411/1838638_4.shtml"],
+          ["鹭鹰龙骑乘，手册摘录", "https://www.gamersky.com/handbook/202411/1838556.shtml"],
+          ["PlayStation 新手指南", "https://www.playstation.com/en-no/games/monster-hunter-wilds/monster-hunter-wilds-starters-guide/"]
+        ]
+      }
+    ];
+
+    const state = { game: "tsushima", mode: "field", plat: "ps", q: "", pin: null };
+
+    const $ = (id) => document.getElementById(id);
+
+    function game() { return GAMES.find((g) => g.id === state.game); }
+    function mode() {
+      const g = game();
+      return g.modes.find((m) => m.id === state.mode) || g.modes[0];
+    }
+    function label(key) { return KEYS[key][state.plat]; }
+    function glyph(key) { return GLYPH[key][state.plat]; }
+    function keyText(action) {
+      const parts = action.keys.map(label);
+      return action.chord ? parts.join(" + ") : parts.join(" / ");
+    }
+    function visibleActions() {
+      const q = state.q.trim().toLowerCase();
+      return mode().actions.filter((a) => !q || a.name.toLowerCase().includes(q) || keyText(a).toLowerCase().includes(q));
+    }
+    function category(action) {
+      if (action.chord) return "chord";
+      return KEY_GROUP[action.keys[0]];
+    }
+
+    function applyTheme() {
+      const g = game();
+      document.documentElement.style.setProperty("--accent", g.accent);
+      document.documentElement.style.setProperty("--accent-soft", g.soft);
+    }
+
+    function syncHash() {
+      const next = "#" + state.game + "/" + state.mode + "/" + state.plat;
+      if (location.hash !== next) history.replaceState(null, "", next);
+    }
+
+    function readHash() {
+      const [g, m, p] = location.hash.replace("#", "").split("/");
+      if (GAMES.some((x) => x.id === g)) state.game = g;
+      const found = game().modes.find((x) => x.id === m);
+      state.mode = found ? found.id : game().modes[0].id;
+      if (p === "ps" || p === "xb") state.plat = p;
+    }
+
+    function actionsFor(key) {
+      return visibleActions().filter((a) => a.keys.includes(key));
+    }
+
+    function renderTabs() {
+      $("tabs").replaceChildren(...GAMES.map((g) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.role = "tab";
+        b.textContent = g.name;
+        b.setAttribute("aria-selected", String(g.id === state.game));
+        b.onclick = () => {
+          state.game = g.id;
+          state.mode = g.modes[0].id;
+          state.pin = null;
+          render();
+        };
+        return b;
+      }));
+    }
+
+    function renderModes() {
+      $("modes").replaceChildren(...game().modes.map((m) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.textContent = m.name;
+        b.setAttribute("aria-pressed", String(m.id === mode().id));
+        b.onclick = () => { state.mode = m.id; state.pin = null; render(); };
+        return b;
+      }));
+    }
+
+    function renderPlat() {
+      $("plat").replaceChildren(...[
+        ["ps", "PlayStation"],
+        ["xb", "Xbox"]
+      ].map(([id, name]) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.textContent = name;
+        b.setAttribute("aria-pressed", String(state.plat === id));
+        b.onclick = () => { state.plat = id; render(); };
+        return b;
+      }));
+    }
+
+    function renderGlyphs() {
+      for (const key of Object.keys(KEYS)) {
+        const node = $("glyph-" + key);
+        if (node) node.textContent = glyph(key);
+      }
+      const used = new Set(visibleActions().flatMap((a) => a.keys));
+      const hot = new Set(state.pin ? state.pin.split(",") : []);
+      for (const key of Object.keys(KEYS)) {
+        const node = $("pad-" + key);
+        if (!node) continue;
+        node.classList.toggle("used", used.has(key));
+        node.classList.toggle("on", hot.has(key));
+      }
+      $("pad-hint").textContent = state.plat === "ps"
+        ? "中央宽键是触摸板，小圆键是 Options。L3 / R3 是按下摇杆。"
+        : "中央宽键对应 View，小圆键对应 Menu。LS / RS 是按下摇杆。面键按 Xbox 位置：下 A、右 B、左 X、上 Y。";
+    }
+
+    function makeChip(key) {
+      const acts = actionsFor(key);
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "chip" + (acts.length ? "" : " idle");
+      const pin = state.pin === key;
+      if (pin) btn.classList.add("hot");
+      const glyph = document.createElement("span");
+      glyph.className = "glyph";
+      glyph.textContent = label(key);
+      const text = document.createElement("span");
+      const strong = document.createElement("strong");
+      strong.textContent = acts.length ? acts.map((a) => a.name).join("；") : "此情境未使用";
+      text.append(strong);
+      btn.append(glyph, text);
+      btn.onmouseenter = () => { if (!state.pin) setHot(key); };
+      btn.onmouseleave = () => { if (!state.pin) setHot(null); };
+      btn.onclick = () => {
+        state.pin = state.pin === key ? null : key;
+        render();
+      };
+      return btn;
+    }
+
+    function setHot(key) {
+      for (const id of Object.keys(KEYS)) {
+        $("pad-" + id).classList.toggle("on", key === id);
+      }
+    }
+
+    function renderCalls() {
+      $("calls-left").replaceChildren(...LEFT.map(makeChip));
+      $("calls-right").replaceChildren(...RIGHT.map(makeChip));
+    }
+
+    function renderList() {
+      const buckets = new Map();
+      for (const action of visibleActions()) {
+        const cat = category(action);
+        if (!buckets.has(cat)) buckets.set(cat, []);
+        buckets.get(cat).push(action);
+      }
+      const order = ["stick", "shoulder", "face", "dpad", "system", "chord"];
+      const blocks = [];
+      for (const cat of order) {
+        const items = buckets.get(cat);
+        if (!items) continue;
+        const section = document.createElement("section");
+        section.className = "group";
+        const h = document.createElement("h3");
+        h.textContent = GROUP[cat];
+        section.append(h);
+        for (const action of items) {
+          const row = document.createElement("div");
+          row.className = "row";
+          const b = document.createElement("b");
+          b.textContent = keyText(action);
+          const span = document.createElement("span");
+          span.textContent = action.name;
+          row.append(b, span);
+          section.append(row);
+        }
+        blocks.push(section);
+      }
+      if (!blocks.length) {
+        const empty = document.createElement("p");
+        empty.textContent = "没有符合筛选的功能。";
+        $("list").replaceChildren(empty);
+        return;
+      }
+      $("list").replaceChildren(...blocks);
+    }
+
+    function renderNotes() {
+      $("title").textContent = game().name;
+      $("en").textContent = game().en;
+      $("summary").textContent = game().summary;
+      $("notes").replaceChildren(...game().notes.map((text) => {
+        const li = document.createElement("li");
+        li.textContent = text;
+        return li;
+      }));
+      $("sources").replaceChildren(...game().sources.map(([name, url]) => {
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.href = url;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.textContent = name;
+        li.append(a);
+        return li;
+      }));
+    }
+
+    function render() {
+      if (!game().modes.some((m) => m.id === state.mode)) state.mode = game().modes[0].id;
+      applyTheme();
+      renderTabs();
+      renderModes();
+      renderPlat();
+      renderNotes();
+      renderGlyphs();
+      renderCalls();
+      renderList();
+      syncHash();
+      document.title = game().name + " · 手柄键位图";
+    }
+
+    $("search").addEventListener("input", (e) => {
+      state.q = e.target.value;
+      renderGlyphs();
+      renderCalls();
+      renderList();
+    });
+
+    window.addEventListener("hashchange", () => { readHash(); render(); });
+    readHash();
+    render();
+  </script>
+</body>
+</html>
