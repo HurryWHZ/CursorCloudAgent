@@ -354,11 +354,11 @@
         en: "Ghost of Tsushima",
         accent: "#8c3a22",
         soft: "#f3e2d6",
-        summary: "PS4 / PS5 默认方案，导演剪辑版沿用同一套基础战斗键位。游戏里还能换成左手方案，或把攻击挪到肩键的近战交替方案。",
+        summary: "游戏内置四套方案，在选项的手柄设置里切换，不能逐键重绑。下面「默认」和「近战交替」按公开记录绘制。「左右反转」和「左手近战交替」只标出已经写明的攻击键，其余不填，避免把没核对到的功能画成确定键位。",
         modes: [
           {
-            id: "field",
-            name: "探索 / 战斗",
+            id: "default",
+            name: "默认",
             actions: [
               { keys: ["ls"], name: "移动" },
               { keys: ["rs"], name: "转动镜头" },
@@ -374,22 +374,64 @@
               { keys: ["r2"], name: "射击、交互或钩锁；按住后选择架势或速射武器" },
               { keys: ["dup"], name: "对峙。若打开锁定，点按变为锁定，长按才是对峙" },
               { keys: ["dleft"], name: "召唤马" },
-              { keys: ["dright"], name: "拍照模式" },
+              { keys: ["dright"], name: "手势 / 拍照模式" },
               { keys: ["ddown"], name: "消耗决心治疗" },
               { keys: ["touch"], name: "滑动：导风与手势；按下：集中听觉" },
               { keys: ["options"], name: "打开菜单" }
             ]
+          },
+          {
+            id: "melee",
+            name: "近战交替",
+            actions: [
+              { keys: ["ls"], name: "移动" },
+              { keys: ["rs"], name: "转动镜头" },
+              { keys: ["l3"], name: "奔跑；骑马时疾驰" },
+              { keys: ["r3"], name: "蹲伏" },
+              { keys: ["cross"], name: "跳跃" },
+              { keys: ["circle"], name: "冲刺；解锁翻滚后再按一次" },
+              { keys: ["l1"], name: "按住格挡；攻击落到身上前点按则弹反" },
+              { keys: ["l2"], name: "按住瞄准，并选择远程武器或弹药" },
+              { keys: ["r1"], name: "轻攻击 / 暗杀" },
+              { keys: ["r2"], name: "重攻击" },
+              { keys: ["square"], name: "鬼武器速射。原 R1 的功能对调到这里" },
+              { keys: ["triangle"], name: "射击、交互或钩锁；按住后选择架势或速射武器。原 R2 的功能对调到这里" },
+              { keys: ["dup"], name: "对峙。若打开锁定，点按变为锁定，长按才是对峙" },
+              { keys: ["dleft"], name: "召唤马" },
+              { keys: ["dright"], name: "手势 / 拍照模式" },
+              { keys: ["ddown"], name: "消耗决心治疗" },
+              { keys: ["touch"], name: "滑动：导风与手势；按下：集中听觉" },
+              { keys: ["options"], name: "打开菜单" }
+            ]
+          },
+          {
+            id: "melee-left",
+            name: "左手近战交替",
+            emptyLabel: "未逐键确认",
+            actions: [
+              { keys: ["l1"], name: "攻击键。文字只写明攻击改到 L1 和 L2，没写明这颗是轻击还是重击" },
+              { keys: ["l2"], name: "攻击键。若这套是近战交替的左右镜像，这里会是另一击" }
+            ]
+          },
+          {
+            id: "flip",
+            name: "左右反转",
+            emptyLabel: "未逐键确认",
+            actions: []
           }
         ],
         notes: [
-          "面键以 GameWith、Fextralife 和玩家整理的默认表为准，三处一致：× 跳、○ 冲刺、□ 轻攻击/暗杀、△ 重攻击。",
-          "R2 的交互和钩锁、○ 的二段翻滚，来自 GameAccess 对实机默认键位的解说，和“R2 射击 / 按住切换架势”是同一颗键的不同情境。",
-          "原版不能逐键重绑，只能换整套预设。"
+          "四套的正式名字来自导演剪辑版手柄设置：初期設定、左右反転、近接変更、左右反転＆近接変更。英文界面是 Default、Left-Handed、Melee Alternative、Melee Alternative (Left-Handed)。",
+          "默认方案的面键，GameWith、Fextralife 和玩家整理表一致：× 跳、○ 冲刺、□ 轻攻击/暗杀、△ 重攻击。右方向在日文设置表里写作手势，英文表里写作拍照模式。",
+          "近战交替把 □、△ 的攻击换到 R1、R2。使用这套方案的玩家仍用 ○ 闪避、用 R1 打轻击。原肩键上的速射和射击会让位；页面按“两对键互换”把它们画回 □ 和 △。架势、弓和鬼武器的选择会跟着这些键一起挪。",
+          "左手近战交替只确认了攻击在 L1、L2。左右反转是把主要操作放到另一侧。瞄准时对调左右摇杆是另一个独立选项，不是这套方案的别名。ResetEra 上曾经贴过四张实机键位图，现在打不开，所以这两套不补全。",
+          "主机版不能逐键重绑。PC 可以用 Steam Input 另外改，那会离开这四套内置方案。"
         ],
         sources: [
           ["GameWith 默认键位表", "https://gamewith.net/ghost-of-tsushima/article/show/20168"],
           ["Fextralife Controls", "https://ghostoftsushima.wiki.fextralife.com/Controls"],
-          ["GameAccess 实机操作解说", "https://gameaccess.info/ghost-of-tsushima-motor-accessibility-video/"]
+          ["GameAccess：四套方案与默认键", "https://gameaccess.info/ghost-of-tsushima-motor-accessibility-video/"],
+          ["导演剪辑版四套方案的日文名", "https://volx.jp/ghost-of-tsushima-keyboard-controller-setting/"]
         ]
       },
       {
@@ -710,7 +752,7 @@
       glyph.textContent = label(key);
       const text = document.createElement("span");
       const strong = document.createElement("strong");
-      strong.textContent = acts.length ? acts.map((a) => a.name).join("；") : "此情境未使用";
+      strong.textContent = acts.length ? acts.map((a) => a.name).join("；") : (mode().emptyLabel || "此情境未使用");
       text.append(strong);
       btn.append(glyph, text);
       btn.onmouseenter = () => { if (!state.pin) setHot(key); };
@@ -764,7 +806,9 @@
       }
       if (!blocks.length) {
         const empty = document.createElement("p");
-        empty.textContent = "没有符合筛选的功能。";
+        empty.textContent = state.q.trim()
+          ? "没有符合筛选的功能。"
+          : "这套方案没有逐键公开表。示意图上标成「未逐键确认」，已经能确定的部分写在说明里。";
         $("list").replaceChildren(empty);
         return;
       }
